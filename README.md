@@ -1,3 +1,3 @@
-# mickroservice_lesson
+# microservice_lesson
 Docker, kubernetes, CI/CD.
 В данном репозитории будут публиковаться ответы на домашнее задание заданое на курсе "Микросервисная архитектура и контейнеризация" в GeekBrains.

@@ -19,7 +19,12 @@ spec:
         name: postgresql
         ports:
         - containerPort: 5432
-          protocol: TCP
+        volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: data
+        envFrom:
+          - configMapRef:
+              name: postgresql-configmap
         resources:
           requests:
             cpu: 100m

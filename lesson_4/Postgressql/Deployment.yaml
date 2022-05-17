@@ -1,26 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kubedoom-deployment
-  namespace: kubedoom
+  name: postgresql-deployment
+  namespace: postgresql
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: kubedoom-app
+      app: postgresql-app
   template:
     metadata:
       labels:
-        app: kubedoom-app
-        role: rolling-update
+        app: postgresql-app
+        role: recreate-update
     spec:
-      hostNetwork: true
-      serviceAccountName: kubedoom
       containers:
-      - image: storaxdev/kubedoom:0.5.0
-        name: kubedoom
+      - image: postgres:10.13
+        name: postgresql
         ports:
-        - containerPort: 5900
+        - containerPort: 5432
           protocol: TCP
         resources:
           requests:
@@ -29,7 +27,9 @@ spec:
           limits:
             cpu: 100m
             memory: 100Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: postgresql-PersistentVolumeClaim
   strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 50%
+    type: Recreate

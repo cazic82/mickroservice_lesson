@@ -7,4 +7,7 @@ metadata:
 data:
   POSTGRES_DB: testdatabase
   POSTGRES_USER: testuser
-  POSTGRES_PASSWORD: testpassword
+volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: postgresql-PersistentVolumeClaim

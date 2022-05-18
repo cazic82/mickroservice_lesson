@@ -25,6 +25,8 @@ spec:
         envFrom:
           - configMapRef:
               name: postgresql-configmap
+            secretRef:
+              name: postgresql-secret
         resources:
           requests:
             cpu: 100m

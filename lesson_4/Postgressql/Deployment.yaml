@@ -37,6 +37,6 @@ spec:
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: postgresql-PersistentVolumeClaim
+            claimName: postgresql-persistentvolumeclaim
   strategy:
     type: Recreate

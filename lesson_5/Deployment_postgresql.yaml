@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql-deployment
+  namespace: redminesql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgresql-app
+  template:
+    metadata:
+      labels:
+        app: postgresql-app
+        role: recreate-update
+    spec:
+      containers:
+      - image: postgres:10.13
+        name: postgresql
+        ports:
+        - containerPort: 5432
+        volumeMounts:
+          - mountPath: /var/lib/postgresql/data
+            name: data
+        envFrom:
+          - configMapRef:
+              name: postgresql-configmap
+        env:
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: POSTGRES_PASSWORD
+                name: app-secret
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: postgresql-persistentvolumeclaim
+  strategy:
+    type: Recreate

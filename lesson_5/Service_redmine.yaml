@@ -3,11 +3,15 @@ kind: Service
 metadata:
   name: redmine-service
   namespace: redminesql
+  labels:
+    app: redmine
 spec:
-  type: ClusterIP
+  type: NodePort
   ports:
   - port: 3000
     targetPort: 3000
+    nodePort: 30015
+    name: redmine
     protocol: TCP
   selector:
     app: redmine

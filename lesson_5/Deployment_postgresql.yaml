@@ -7,11 +7,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgresql-app
+      app: postgresql
   template:
     metadata:
       labels:
-        app: postgresql-app
+        app: postgresql
         role: recreate-update
     spec:
       containers:
@@ -24,23 +24,16 @@ spec:
             name: data
         envFrom:
           - configMapRef:
-              name: postgresql-configmap
+              name: redminesql-configmap
         env:
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
                 key: POSTGRES_PASSWORD
                 name: app-secret
-        resources:
-          requests:
-            cpu: 100m
-            memory: 100Mi
-          limits:
-            cpu: 100m
-            memory: 100Mi
       volumes:
         - name: data
           persistentVolumeClaim:
-            claimName: postgresql-persistentvolumeclaim
+            claimName: redminesql-persistentvolumeclaim
   strategy:
     type: Recreate

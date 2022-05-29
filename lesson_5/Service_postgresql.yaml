@@ -3,11 +3,14 @@ kind: Service
 metadata:
   name: database
   namespace: redminesql
+  labels:
+    app: postgresql
 spec:
   type: ClusterIP
   ports:
   - port: 5432
     targetPort: 5432
+    name: postgresql
     protocol: TCP
   selector:
     app: postgresql

@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: prometheus-stateful-set
+spec:
+  replicas: 1  # the default is 1
+  selector:
+    matchLabels:
+      app: prometheus  # has to match .spec.template.metadata.labels
+  serviceName: service-statefulset
+  template:
+    metadata:
+      labels:
+        app: prometheus  # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - image: prom/prometheus:v2.19.2
+          name: prometheus
+          ports:
+            - containerPort: 9090
+              name: prometheus
+          livenessProbe:
+            exec:
+              command: ["prometheusctl", "status"]
+            initialDelaySeconds: 60
+            periodSeconds: 60
+            timeoutSeconds: 15
+          readinessProbe:
+            exec:
+              command: ["prometheusctl", "status"]
+            initialDelaySeconds: 20
+            periodSeconds: 60
+            timeoutSeconds: 10
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /prometheus
+              name: data
+            - name: prometheus-configmap-volume
+              mountPath: /etc/prometheus
+      volumes:
+      - name: prometheus-configmap-volume
+        configMap:
+          name: prometheus-configmap
+          items:
+            - key: prometheus.yml
+              path: prometheus.yml
+      serviceAccount: prometheus
+      initContainers:
+      - image: busybox
+        name: mount-permissions-fix
+        command: ["sh", "-c", "chmod 777 /prometheus"]
+        volumeMounts:
+        - name: prometheus
+          mountPath: /prometheus
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - prometheus
+                topologyKey: kubernetes.io/hostname
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 5Gi
+#        storageClassName: "my-storage-class"

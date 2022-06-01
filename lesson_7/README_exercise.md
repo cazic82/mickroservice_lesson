@@ -6,8 +6,8 @@
 
 ===== 1 =======
 Создайте в кластере ConfigMap со следующим содержимым:
-prometheus.yml: |
 ---
+prometheus.yml: |
 global:
     scrape_interval: 30s
 scrape_configs:
@@ -48,10 +48,9 @@ kind: ClusterRoleBinding
 metadata:
   name: prometheus
 roleRef:
----
-apiGroup: rbac.authorization.k8s.io
-kind: ClusterRole
-name: prometheus
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prometheus
 subjects:
 - kind: ServiceAccount
   name: prometheus

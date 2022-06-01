@@ -4,7 +4,7 @@ metadata:
   name: my-ingress
   namespace: default
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/rewrite-target: /$1 # возможно надо удалить $1
 spec:
   rules:
   - host: prometheus.info
